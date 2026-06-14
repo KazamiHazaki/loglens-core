@@ -10,9 +10,14 @@ documentation = "https://docs.rs/loglens-core"
 keywords = ["log", "parser", "json", "logfmt", "query"]
 categories = ["parsing", "command-line-interface"]
 
-# --- NEW: Add 'cdylib' crate type for WASM ---
+# --- Library + Binary ---
 [lib]
+name = "loglens_core"
 crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "loglens"
+path = "src/main.rs"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -22,7 +27,16 @@ regex = "1.10"
 chrono = { version = "0.4", features = ["serde"] }
 humantime = "2.1"
 
-# --- NEW: WASM Dependency (Optional) ---
+# --- CLI dependencies ---
+clap = { version = "4", features = ["derive"] }
+rayon = "1.10"
+flate2 = "1.0"
+colored = "2.1"
+indicatif = "0.17"
+glob = "0.3"
+ctrlc = "3.4"
+
+# --- WASM Dependency (Optional) ---
 [dependencies.wasm-bindgen]
 version = "0.2"
 optional = true
@@ -31,3 +45,9 @@ optional = true
 default = []
 # We create a 'wasm' feature so we only compile this for the web
 wasm = ["dep:wasm-bindgen"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
